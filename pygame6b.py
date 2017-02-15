@@ -24,6 +24,11 @@ clock = pygame.time.Clock() # define gameclock
 # GAME LOGIC =========
 car_img = pygame.image.load('racecar.png')
 
+def things_dodged(count):
+    font = pygame.font.SysFont(None, 25)
+    text = font.render("Dodged: " + str(count), True, black)
+    gameDisplay.blit(text, (2,2))
+
 def things(thingx, thingy, thingw, thingh, color):
     pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
 
@@ -61,6 +66,8 @@ def game_loop():
     car_speed = 0
     car_width = 73
 
+    dodged = 0
+
     while not gameExit:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -90,6 +97,9 @@ def game_loop():
         #draw car
         car(x, y)
 
+        #draw text
+        things_dodged(dodged)
+
         # WALL BOUNDARY LOGIC
         if x > display_width - car_width or x < 0:
             crash()
@@ -98,6 +108,9 @@ def game_loop():
         if thing_starty > display_height:
             thing_starty = 0 - thing_height
             thing_startx = random.randrange(0, display_width)
+            dodged += 1
+            thing_speed += 1
+            thing_width += (dodged * 1.2)
 
         # collision detection
         if y < thing_starty + thing_height:
